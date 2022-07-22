@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-less-for-styled-components",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Babel Plugin - Using Less for styled-components",
   "main": "dist/index.js",
   "source": "src/index.js",
