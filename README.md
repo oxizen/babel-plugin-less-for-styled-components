@@ -1,3 +1,4 @@
 Babel Plugin - Using Less for styled-components
 
-Refer to the repository => https://github.com/jean343/styless.git
+This is a plugin modified so that only Less can be used by referring to the plugin below.
+=> https://github.com/jean343/styless.git
