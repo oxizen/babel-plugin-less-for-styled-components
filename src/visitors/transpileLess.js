@@ -2,12 +2,12 @@ import path from "path";
 import Less from "less/lib/less";
 import FileManager from "less/lib/less-node/file-manager";
 
-export default (source, filename) => {
+export default (source, filename, opts) => {
     const fileManager = new FileManager();
     const less = new Less(undefined, [fileManager]);
     less.PluginLoader = class PluginLoader {};
 
-    const paths = [path.dirname(filename)];
+    const paths = [path.dirname(filename), opts.cwd];
     source = source.trim();
     if (!source.endsWith(";")) source += ";";
 

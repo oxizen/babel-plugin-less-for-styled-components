@@ -5,37 +5,40 @@ import generate from '@babel/generator';
 const regex = /`([\s\S]*)`/;
 
 export default (path, state, {types: t}) => {
-    if (!(isStyled(t)(path.node.tag, state) || isPureHelper(t)(path.node.tag || path.node.callee, state))) {
-        return;
-    }
+  if (!(isStyled(t)(path.node.tag, state) || isPureHelper(t)(path.node.tag || path.node.callee, state))) {
+    return;
+  }
 
-    // Find the TemplateLiteral in the TaggedTemplateExpression
-    path.traverse({
-        TemplateLiteral(p) {
-            if (p.isClean) return;
-            p.stop(); // Only traverse the first TemplateLiteral of TaggedTemplateExpression
+  // Find the TemplateLiteral in the TaggedTemplateExpression
+  path.traverse({
+    TemplateLiteral(p) {
+      if (p.isClean) return;
+      p.stop(); // Only traverse the first TemplateLiteral of TaggedTemplateExpression
 
-            let rawSource = p.getSource();
-            if (!rawSource) {
-                const {code} = generate({
-                    type: 'Program',
-                    body: [path.node]
-                });
-                rawSource = code;
-            }
+      let rawSource = p.getSource();
+      if (!rawSource) {
+        const {code} = generate({
+          type: 'Program',
+          body: [path.node]
+        });
+        rawSource = code;
+      }
 
-            const [, source] = regex.exec(rawSource);
-            if (!source) return;
-            p.isClean = true;
+      let [, source] = regex.exec(rawSource);
+      if (!source) return;
+      p.isClean = true;
+      if (Array.isArray(state.opts.globalImports)) {
+        source = state.opts.globalImports.map(f => `@import "${f}";`).join('') + source;
+      }
 
-            try {
-                const raw = transpileLess(source, state.file.opts.filename, state.opts);
-                if (source !== raw) {
-                    p.replaceWithSourceString('`' + raw + '`');
-                }
-            } catch (e) {
-                console.error("Error converting the less syntax for the file:", state.file.opts.filename, rawSource, e);
-            }
-        },
-    });
+      try {
+        const raw = transpileLess(source, state.file.opts.filename, state.opts);
+        if (source !== raw) {
+          p.replaceWithSourceString('`' + raw + '`');
+        }
+      } catch (e) {
+        console.error("Error converting the less syntax for the file:", state.file.opts.filename, rawSource, e);
+      }
+    },
+  });
 }
