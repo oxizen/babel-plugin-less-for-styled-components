@@ -27,12 +27,37 @@ export default (path, state, {types: t}) => {
       let [, source] = regex.exec(rawSource);
       if (!source) return;
       p.isClean = true;
+      let cursor;
+      let sq = 0;
+      const dict = {};
+      while ((cursor = source.indexOf('${')) > -1) {
+        const start = cursor;
+        cursor += 1;
+        let close;
+        let stack = 1;
+        while (stack > 0) {
+          close = source.indexOf('}', cursor + 1)
+          if (close === -1) throw 'template brace not balanced';
+          const open = source.indexOf('{', cursor + 1)
+          if (open === -1 || open > close) {
+            cursor = close;
+            stack -= 1;
+          } else {
+            cursor = open;
+            stack += 1;
+          }
+        }
+        const tpl = source.slice(start, close + 1);
+        const key = `var(--LESS-FOR-STYLED-${sq++})`
+        dict[key] = tpl;
+        source = source.replace(tpl, key);
+      }
       if (Array.isArray(state.opts.globalImports)) {
         source = state.opts.globalImports.map(f => `@import "${f}";`).join('') + source;
       }
-
       try {
-        const raw = transpileLess(source, state.file.opts.filename, state.opts);
+        let raw = transpileLess(source, state.file.opts.filename, state.opts);
+        Object.keys(dict).forEach(k => raw = raw.replace(k, dict[k]));
         if (source !== raw) {
           p.replaceWithSourceString('`' + raw + '`');
         }

@@ -1,9 +1,21 @@
 Babel Plugin - Using Less for styled-components
 
+## 1.0.2
 - global import option
-```
-['babel-plugin-less-for-styled-components', { globalImports: ['src/less/asset.less'] }]
+```javascript
+[
+  'babel-plugin-less-for-styled-components', 
+  { globalImports: ['src/less/proj'] }
+]
 ```
 
-This is a plugin modified so that only Less can be used by referring to the plugin below.
-=> https://github.com/jean343/styless.git
+## 1.0.3
+- expression interpolation
+```javascript
+const Button = styled.button<{ disabled: boolean }>`
+  .color(${props => (props.disabled ? 'gray' : 'red')});
+`
+```
+
+
+It refers to [styless](https://github.com/jean343/styless.git).
