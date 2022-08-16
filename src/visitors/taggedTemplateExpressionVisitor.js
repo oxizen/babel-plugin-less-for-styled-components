@@ -53,11 +53,11 @@ export default (path, state, { types: t }) => {
         source = source.replace(tpl, key);
       }
       cursor = 0;
-      let keywordEnd;
-      while ((keywordEnd = source.indexOf('{', cursor)) > 1) {
-        const topLevelStyleAndSelector = source.substring(cursor, keywordEnd);
+      let topLevelStyleAndSelectorEnd;
+      while ((topLevelStyleAndSelectorEnd = source.indexOf('{', cursor)) > 1) {
+        const topLevelStyleAndSelector = source.substring(cursor, topLevelStyleAndSelectorEnd);
         const start = cursor;
-        cursor = keywordEnd;
+        cursor = topLevelStyleAndSelectorEnd;
         let close;
         let stack = 1;
         while (stack > 0) {
