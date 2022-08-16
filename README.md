@@ -17,5 +17,14 @@ const Button = styled.button<{ disabled: boolean }>`
 `
 ```
 
+## 1.0.4
+- top level class with &
+```javascript
+const Button = styled.div`
+  .color(white);
+  &.active { .color(red); }
+`
+```
+
 
 It refers to [styless](https://github.com/jean343/styless.git).

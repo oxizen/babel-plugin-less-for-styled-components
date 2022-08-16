@@ -52,6 +52,11 @@ export default (path, state, {types: t}) => {
         dict[key] = tpl;
         source = source.replace(tpl, key);
       }
+      source = source.replaceAll(/&\.[\w-]+/g, org => {
+        const key = `var(--LESS-FOR-STYLED-${sq++})`
+        dict[key] = org;
+        return key;
+      });
       if (Array.isArray(state.opts.globalImports)) {
         source = state.opts.globalImports.map(f => `@import "${f}";`).join('') + source;
       }
