@@ -1,10 +1,10 @@
-import {isStyled, isPureHelper} from "../utils/detectors";
+import { isStyled, isPureHelper } from "../utils/detectors";
 import transpileLess from "./transpileLess";
 import generate from '@babel/generator';
 
 const regex = /`([\s\S]*)`/;
 
-export default (path, state, {types: t}) => {
+export default (path, state, { types: t }) => {
   if (!(isStyled(t)(path.node.tag, state) || isPureHelper(t)(path.node.tag || path.node.callee, state))) {
     return;
   }
@@ -17,7 +17,7 @@ export default (path, state, {types: t}) => {
 
       let rawSource = p.getSource();
       if (!rawSource) {
-        const {code} = generate({
+        const { code } = generate({
           type: 'Program',
           body: [path.node]
         });
@@ -48,15 +48,36 @@ export default (path, state, {types: t}) => {
           }
         }
         const tpl = source.slice(start, close + 1);
-        const key = `var(--LESS-FOR-STYLED-${sq++})`
+        const key = `var(--LESS-FOR-STYLED-${sq++})`;
         dict[key] = tpl;
         source = source.replace(tpl, key);
       }
-      source = source.replaceAll(/&\.[\w-]+/g, org => {
-        const key = `var(--LESS-FOR-STYLED-${sq++})`
-        dict[key] = org;
-        return key;
-      });
+      cursor = 0;
+      let keywordEnd;
+      while ((keywordEnd = source.indexOf('{', cursor)) > 1) {
+        const keyword = source.substring(cursor, keywordEnd);
+        cursor = keywordEnd;
+        let close;
+        let stack = 1;
+        while (stack > 0) {
+          close = source.indexOf('}', cursor + 1);
+          if (close === -1) throw 'style brace not balanced';
+          const open = source.indexOf('{', cursor + 1);
+          if (open === -1 || open > close) {
+            cursor = close + 1;
+            stack -= 1;
+          } else {
+            cursor = open;
+            stack += 1;
+          }
+        }
+        if (keyword.trim().startsWith('&')) {
+          const key = `var(--LESS-FOR-STYLED-${sq++})`
+          dict[key] = keyword;
+          source = source.replace(keyword, key);
+        }
+      }
+
       if (Array.isArray(state.opts.globalImports)) {
         source = state.opts.globalImports.map(f => `@import "${f}";`).join('') + source;
       }

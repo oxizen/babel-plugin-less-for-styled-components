@@ -17,7 +17,7 @@ const Button = styled.button<{ disabled: boolean }>`
 `
 ```
 
-## 1.0.4
+## 1.0.5
 - top level class with &
 ```javascript
 const Button = styled.div`
