@@ -55,7 +55,8 @@ export default (path, state, { types: t }) => {
       cursor = 0;
       let keywordEnd;
       while ((keywordEnd = source.indexOf('{', cursor)) > 1) {
-        const keyword = source.substring(cursor, keywordEnd);
+        const topLevelStyleAndSelector = source.substring(cursor, keywordEnd);
+        const start = cursor;
         cursor = keywordEnd;
         let close;
         let stack = 1;
@@ -71,10 +72,12 @@ export default (path, state, { types: t }) => {
             stack += 1;
           }
         }
-        if (keyword.trim().startsWith('&')) {
+        const selectorIndex = topLevelStyleAndSelector.lastIndexOf(';') + 1;
+        const selector = topLevelStyleAndSelector.substring(selectorIndex);
+        if (selector.trim().startsWith('&')) {
           const key = `var(--LESS-FOR-STYLED-${sq++})`
-          dict[key] = keyword;
-          source = source.replace(keyword, key);
+          dict[key] = selector;
+          source = source.substring(0,start + selectorIndex) + key + source.substring(start + selectorIndex + selector.length);
         }
       }
 
