@@ -86,7 +86,7 @@ export default (path, state, { types: t }) => {
       }
       try {
         let raw = transpileLess(source, state.file.opts.filename, state.opts);
-        Object.keys(dict).forEach(k => raw = raw.replace(k, dict[k]));
+        Object.keys(dict).forEach(k => raw = raw.replaceAll(k, dict[k]));
         if (source !== raw) {
           p.replaceWithSourceString('`' + raw + '`');
         }

@@ -26,5 +26,7 @@ const Button = styled.div`
 `
 ```
 
+## 1.1.1
+- bug fix when using template as selector 
 
 It refers to [styless](https://github.com/jean343/styless.git).
