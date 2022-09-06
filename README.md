@@ -1,6 +1,6 @@
-Babel Plugin - Using LESS for styled-components
+[Babel Plugin - Using LESS for styled-components](https://www.npmjs.com/package/babel-plugin-less-for-styled-components)
 
-### styled-component with LESS.
+### styled-components with LESS.
 
 - Template literal with props
 ```javascript
