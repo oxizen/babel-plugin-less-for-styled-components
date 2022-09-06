@@ -1,3 +1,5 @@
+// noinspection JSValidateTypes
+
 import path from "path";
 import Less from "less/lib/less";
 import FileManager from "less/lib/less-node/file-manager";
@@ -12,6 +14,7 @@ export default (source, filename, opts) => {
     if (!source.endsWith(";")) source += ";";
 
     const parseOpts = { math: 0, paths, syncImport: true };
+    if (opts.compress) parseOpts.compress = true;
 
     let root, imports, options;
     less.parse(source, parseOpts, (e, _root, _imports, _options) => {

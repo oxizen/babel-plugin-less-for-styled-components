@@ -7,3 +7,5 @@ examples
 notes
 *.tgz
 yarn.lock
+src
+coverage

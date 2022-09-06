@@ -1,6 +1,6 @@
 import { isStyled, isPureHelper } from "../utils/detectors";
-import transpileLess from "./transpileLess";
 import generate from '@babel/generator';
+import transpile from "./transpile";
 
 const regex = /`([\s\S]*)`/;
 
@@ -14,7 +14,6 @@ export default (path, state, { types: t }) => {
     TemplateLiteral(p) {
       if (p.isClean) return;
       p.stop(); // Only traverse the first TemplateLiteral of TaggedTemplateExpression
-
       let rawSource = p.getSource();
       if (!rawSource) {
         const { code } = generate({
@@ -23,76 +22,11 @@ export default (path, state, { types: t }) => {
         });
         rawSource = code;
       }
-
       let [, source] = regex.exec(rawSource);
       if (!source) return;
       p.isClean = true;
-      let cursor;
-      let sq = 0;
-      const dict = {};
-      while ((cursor = source.indexOf('${')) > -1) {
-        const start = cursor;
-        cursor += 1;
-        let close;
-        let stack = 1;
-        while (stack > 0) {
-          close = source.indexOf('}', cursor + 1)
-          if (close === -1) throw 'template brace not balanced';
-          const open = source.indexOf('{', cursor + 1)
-          if (open === -1 || open > close) {
-            cursor = close;
-            stack -= 1;
-          } else {
-            cursor = open;
-            stack += 1;
-          }
-        }
-        const tpl = source.slice(start, close + 1);
-        const key = `var(--LESS-FOR-STYLED-${sq++})`;
-        dict[key] = tpl;
-        source = source.replace(tpl, key);
-      }
-      cursor = 0;
-      let topLevelStyleAndSelectorEnd;
-      while ((topLevelStyleAndSelectorEnd = source.indexOf('{', cursor)) > 1) {
-        const topLevelStyleAndSelector = source.substring(cursor, topLevelStyleAndSelectorEnd);
-        const start = cursor;
-        cursor = topLevelStyleAndSelectorEnd;
-        let close;
-        let stack = 1;
-        while (stack > 0) {
-          close = source.indexOf('}', cursor + 1);
-          if (close === -1) throw 'style brace not balanced';
-          const open = source.indexOf('{', cursor + 1);
-          if (open === -1 || open > close) {
-            cursor = close + 1;
-            stack -= 1;
-          } else {
-            cursor = open;
-            stack += 1;
-          }
-        }
-        const selectorIndex = topLevelStyleAndSelector.lastIndexOf(';') + 1;
-        const selector = topLevelStyleAndSelector.substring(selectorIndex);
-        if (selector.trim().startsWith('&')) {
-          const key = `var(--LESS-FOR-STYLED-${sq++})`
-          dict[key] = selector;
-          source = source.substring(0,start + selectorIndex) + key + source.substring(start + selectorIndex + selector.length);
-        }
-      }
-
-      if (Array.isArray(state.opts.globalImports)) {
-        source = state.opts.globalImports.map(f => `@import "${f}";`).join('') + source;
-      }
-      try {
-        let raw = transpileLess(source, state.file.opts.filename, state.opts);
-        Object.keys(dict).forEach(k => raw = raw.replaceAll(k, dict[k]));
-        if (source !== raw) {
-          p.replaceWithSourceString('`' + raw + '`');
-        }
-      } catch (e) {
-        console.error("Error converting the less syntax for the file:", state.file.opts.filename, rawSource, e);
-      }
+      const transpiled = transpile(source, state);
+      if (source !== transpiled) p.replaceWithSourceString('`' + transpiled + '`')
     },
   });
 }

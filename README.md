@@ -1,7 +1,28 @@
-Babel Plugin - Using Less for styled-components
+Babel Plugin - Using LESS for styled-components
 
-## 1.0.2
-- global import option
+### styled-component with LESS.
+
+- Template literal with props
+```javascript
+const Button = styled.button<{ disabled: boolean }>`
+  .color(${props => (props.disabled ? 'gray' : 'red')});
+`
+```
+
+- Referring to other components
+```javascript
+const Link = styled.a`
+  .flex; .items-center; .p(5, 10);
+`;
+
+const Span = styled.span`
+  .c(red);
+  ${Link}:hover & { .c(blue) }
+`;
+```
+
+### global import option
+add global imports option, it can be referenced in all the less blocks.
 ```javascript
 [
   'babel-plugin-less-for-styled-components', 
@@ -9,24 +30,8 @@ Babel Plugin - Using Less for styled-components
 ]
 ```
 
-## 1.0.3
-- expression interpolation
-```javascript
-const Button = styled.button<{ disabled: boolean }>`
-  .color(${props => (props.disabled ? 'gray' : 'red')});
-`
-```
+### Cautions
+- When registering this plug-in, it must be registered before `babel-plugin-styled-components`.
 
-## 1.1
-- top level class with &
-```javascript
-const Button = styled.div`
-  .color(white);
-  &.active { .color(red); }
-`
-```
 
-## 1.1.1
-- bug fix when using template as selector 
-
-It refers to [styless](https://github.com/jean343/styless.git).
+detecting templates function is from [styless](https://github.com/jean343/styless.git).
