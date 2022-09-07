@@ -61,6 +61,7 @@ export default (source, state) => {
     } else if (selector.includes('&')) {
       const key = `.--LESS-FOR-STYLED-${sq++}`
       topLevelDict[key] = selector.trim();
+      cursor += key.length - selector.length;
       result = result.substring(0, start + selectorIndex) + key + result.substring(start + selectorIndex + selector.length);
     }
   }

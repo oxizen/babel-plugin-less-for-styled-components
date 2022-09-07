@@ -31,6 +31,14 @@ test('top level ampersand selector', () => {
     .toBe("${Root} &{color:#f00}");
 })
 
+test('top level multiple ampersand', () => {
+  expect(transpile(`
+    .p(10,12); .fs(14); .pointer;
+    &.active { .bold; .bgc(@blue); }
+    &:hover { .bgc(@red); }
+  `, testOption))
+    .toBe("padding:10px 12px;font-size:14px;cursor:pointer;&.active{font-weight:bold;background-color:#00f}&:hover{background-color:#f00}");
+})
 
 test('top level ampersand with media query', () => {
   expect(transpile("@media (min-width: 700px) { &.top { &.left { .c(@red); } &.right { .c(@blue); } } }", testOption))
