@@ -34,4 +34,4 @@ const Span = styled.span`
 - When registering this plug-in, it must be registered before `babel-plugin-styled-components`.
 
 
-detecting template function is from [styless](https://github.com/jean343/styless.git).
+function to detect template is from [styless](https://github.com/jean343/styless.git).
