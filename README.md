@@ -1,6 +1,7 @@
-[Babel Plugin - Using LESS for styled-components](https://www.npmjs.com/package/babel-plugin-less-for-styled-components)
+[![npm](https://img.shields.io/npm/v/babel-plugin-less-for-styled-components.svg)](https://www.npmjs.com/package/babel-plugin-less-for-styled-components)
 
-### styled-components with LESS.
+### LESS for styled-components
+It's a babel plugin that can use LESS syntax in the styled-components' style template.
 
 - Template literal with props
 ```javascript
