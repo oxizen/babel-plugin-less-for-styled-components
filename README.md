@@ -23,7 +23,7 @@ const Span = styled.span`
 ```
 
 ### global import option
-- add global imports option, it can be referenced in all the less blocks.
+- add global imports option, it can be referenced in all the style blocks.
 ```javascript
 [
   'babel-plugin-less-for-styled-components', 
@@ -32,7 +32,7 @@ const Span = styled.span`
 ```
 
 ### Cautions
-- When registering this plug-in, it must be registered before `babel-plugin-styled-components`.
+- When registering this plug-in, it must be registered before [`babel-plugin-styled-components`](https://www.npmjs.com/package/babel-plugin-styled-components).
 
 
 function to detect template is from [styless](https://github.com/jean343/styless.git).
