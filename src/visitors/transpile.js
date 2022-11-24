@@ -30,18 +30,15 @@ export default (source, state) => {
     result = result.replace(tpl, key);
   }
 
-  if (Array.isArray(state.opts.globalImports)) {
-    result = state.opts.globalImports.map(f => `@import "${f}";`).join('') + result;
-  }
-
   cursor = 0;
   let topLevelStyleAndSelectorEnd;
+  let startStack = 1;
   while ((topLevelStyleAndSelectorEnd = result.indexOf('{', cursor)) > 1) {
     const topLevelStyleAndSelector = result.substring(cursor, topLevelStyleAndSelectorEnd);
     const start = cursor;
     cursor = topLevelStyleAndSelectorEnd;
     let close;
-    let stack = 1;
+    let stack = startStack;
     while (stack > 0) {
       close = result.indexOf('}', cursor + 1);
       if (close === -1) throw 'style brace not balanced';
@@ -58,12 +55,20 @@ export default (source, state) => {
     const selector = topLevelStyleAndSelector.substring(selectorIndex);
     if (selector.trim().startsWith('@media')) {
       cursor = topLevelStyleAndSelectorEnd + 2;
-    } else if (selector.includes('&')) {
-      const key = `.--LESS-FOR-STYLED-${sq++}`
-      topLevelDict[key] = selector.trim();
-      cursor += key.length - selector.length;
-      result = result.substring(0, start + selectorIndex) + key + result.substring(start + selectorIndex + selector.length);
+      startStack = 2;
+    } else {
+      startStack = 1;
+      if (selector.includes('&')) {
+        const key = `.--LESS-FOR-STYLED-${sq++}`
+        topLevelDict[key] = selector.trim();
+        cursor += key.length - selector.length;
+        result = result.substring(0, start + selectorIndex) + key + result.substring(start + selectorIndex + selector.length);
+      }
     }
+  }
+
+  if (Array.isArray(state.opts.globalImports)) {
+    result = state.opts.globalImports.map(f => `@import "${f}";`).join('') + result;
   }
 
   try {

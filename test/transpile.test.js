@@ -41,6 +41,13 @@ test('top level multiple ampersand', () => {
 })
 
 test('top level ampersand with media query', () => {
-  expect(transpile("@media (min-width: 700px) { &.top { &.left { .c(@red); } &.right { .c(@blue); } } }", testOption))
-    .toBe("@media (min-width:700px){&.top.left{color:#f00}&.top.right{color:#00f}}");
+  expect(transpile(`
+  @media (min-width: 700px) { 
+    &.top { &.left { .c(@red); } &.right { .c(@blue); } } 
+  }
+  &.top { &.left { .c(@red); } &.right { .c(@blue); } }
+  `, testOption))
+    .toBe("@media (min-width:700px){&.top.left{color:#f00}&.top.right{color:#00f}}&.top.left{color:#f00}&.top.right{color:#00f}");
 })
+
+
