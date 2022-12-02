@@ -54,8 +54,12 @@ export default (source, state) => {
     const selectorIndex = topLevelStyleAndSelector.lastIndexOf(';') + 1;
     const selector = topLevelStyleAndSelector.substring(selectorIndex);
     if (selector.trim().startsWith('@media')) {
-      cursor = topLevelStyleAndSelectorEnd + 2;
-      startStack = 2;
+      const nextOpen = result.indexOf('{', topLevelStyleAndSelectorEnd + 2);
+      const nextClose = result.indexOf('}', topLevelStyleAndSelectorEnd + 2);
+      if (nextOpen !== -1 && nextOpen < nextClose) { // next block is contained by media query
+        cursor = topLevelStyleAndSelectorEnd + 2;
+        startStack = 2;
+      }
     } else {
       startStack = 1;
       if (selector.includes('&')) {

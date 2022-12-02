@@ -51,3 +51,19 @@ test('top level ampersand with media query', () => {
 })
 
 
+
+test('top level media query without inner block', () => {
+  expect(transpile(`
+  @media (min-width: 700px) { 
+    display: block 
+  }
+  .btn-add { .c(#fff);
+    &.top { 
+     &.left { .c(@red); } &.right { .c(@blue); }
+    }
+  }
+  `, testOption))
+  .toBe("@media (min-width:700px){display:block}.btn-add{color:#fff}.btn-add.top.left{color:#f00}.btn-add.top.right{color:#00f}");
+})
+
+
