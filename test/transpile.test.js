@@ -66,4 +66,16 @@ test('top level media query without inner block', () => {
   .toBe("@media (min-width:700px){display:block}.btn-add{color:#fff}.btn-add.top.left{color:#f00}.btn-add.top.right{color:#00f}");
 })
 
+test('multiple top level ampersand with media query', () =>{
+  expect(transpile(`
+  @media (min-width: 700px) { 
+    &.top { &.left { .c(@red); } &.right { .c(@blue); } } 
+    &.bottom { &.left { .c(@red); } &.right { .c(@blue); } } 
+    &.bottom { &.left { .c(@red); } &.right { .c(@blue); } } 
+  }
+  &.top { &.left { .c(@red); } &.right { .c(@blue); } }
+  `, testOption))
+  .toBe("@media (min-width:700px){&.top.left{color:#f00}&.top.right{color:#00f}&.bottom.left{color:#f00}&.bottom.right{color:#00f}&.bottom.left{color:#f00}&.bottom.right{color:#00f}}&.top.left{color:#f00}&.top.right{color:#00f}");
+})
+
 

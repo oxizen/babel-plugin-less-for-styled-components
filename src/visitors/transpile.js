@@ -32,13 +32,16 @@ export default (source, state) => {
 
   cursor = 0;
   let topLevelStyleAndSelectorEnd;
-  let startStack = 1;
   while ((topLevelStyleAndSelectorEnd = result.indexOf('{', cursor)) > 1) {
     const topLevelStyleAndSelector = result.substring(cursor, topLevelStyleAndSelectorEnd);
+    if (topLevelStyleAndSelector.trim().startsWith('}')) {
+      cursor = result.indexOf('}', cursor) + 1;
+      continue;
+    }
     const start = cursor;
     cursor = topLevelStyleAndSelectorEnd;
     let close;
-    let stack = startStack;
+    let stack = 1;
     while (stack > 0) {
       close = result.indexOf('}', cursor + 1);
       if (close === -1) throw 'style brace not balanced';
@@ -58,10 +61,8 @@ export default (source, state) => {
       const nextClose = result.indexOf('}', topLevelStyleAndSelectorEnd + 2);
       if (nextOpen !== -1 && nextOpen < nextClose) { // next block is contained by media query
         cursor = topLevelStyleAndSelectorEnd + 2;
-        startStack = 2;
       }
     } else {
-      startStack = 1;
       if (selector.includes('&')) {
         const key = `.--LESS-FOR-STYLED-${sq++}`
         topLevelDict[key] = selector.trim();
