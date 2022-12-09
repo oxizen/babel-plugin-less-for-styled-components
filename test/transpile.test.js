@@ -79,3 +79,14 @@ test('multiple top level ampersand with media query', () =>{
 })
 
 
+test('commented out ampersand with media query', () =>{
+  expect(transpile(`
+  @media (min-width: 700px) {
+    display: grid; .p(10,10);
+    //&:hover {.bgc(@blue);}
+    //&.hover {.bgc(@blue);}
+  }
+  `, testOption))
+  .toBe("@media (min-width:700px){display:grid;padding:10px 10px}");
+})
+

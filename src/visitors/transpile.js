@@ -63,7 +63,7 @@ export default (source, state) => {
         cursor = topLevelStyleAndSelectorEnd + 2;
       }
     } else {
-      if (selector.includes('&')) {
+      if (selector.trim().startsWith('&')) {
         const key = `.--LESS-FOR-STYLED-${sq++}`
         topLevelDict[key] = selector.trim();
         cursor += key.length - selector.length;
