@@ -3,6 +3,8 @@ const VALID_TOP_LEVEL_IMPORT_PATHS = [
   'styled-components/no-tags',
   'styled-components/native',
   'styled-components/primitives',
+  '@emotion/styled',
+  '@emotion/css',
 ];
 
 export const isValidTopLevelImport = x =>
@@ -54,11 +56,6 @@ export const importLocalName = (name, state, bypassCache = false) => {
 };
 
 export const isStyled = t => (tag, state) => {
-  /* Matches the extend blocks such as
-  const Block = Div.extend`
-      color: @color
-  `
-  */
   if (tag.property && tag.property.name === "extend") {
     return true;
   }

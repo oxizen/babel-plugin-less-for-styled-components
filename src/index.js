@@ -2,8 +2,12 @@ import taggedTemplateExpressionVisitor from './visitors/taggedTemplateExpression
 
 export default babel => ({
     visitor: {
-        TaggedTemplateExpression(path, state) {
-            taggedTemplateExpressionVisitor(path, state, babel);
+        Program(programPath, state) {
+            programPath.traverse({
+                TaggedTemplateExpression(path) {
+                    taggedTemplateExpressionVisitor(path, state, babel);
+                },
+            });
         },
     }
 });

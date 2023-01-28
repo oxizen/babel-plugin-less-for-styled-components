@@ -5,9 +5,8 @@ import transpile from "./transpile";
 const regex = /`([\s\S]*)`/;
 
 export default (path, state, { types: t }) => {
-  if (!(isStyled(t)(path.node.tag, state) || isPureHelper(t)(path.node.tag || path.node.callee, state))) {
-    return;
-  }
+  if (state.file.opts.sourceFileName.includes('node_modules')) return;
+  if (!(isStyled(t)(path.node.tag, state) || isPureHelper(t)(path.node.tag || path.node.callee, state))) return;
 
   // Find the TemplateLiteral in the TaggedTemplateExpression
   path.traverse({
