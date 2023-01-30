@@ -1,7 +1,7 @@
 {
   "name": "babel-plugin-less-for-styled-components",
-  "version": "1.2.0",
-  "description": "Using LESS for styled-components",
+  "version": "1.2.1",
+  "description": "Using LESS for styled-components or emotion",
   "main": "dist/index.js",
   "source": "src/index.js",
   "repository": "https://github.com/oxizen/babel-plugin-less-for-styled-components.git",
@@ -32,6 +32,7 @@
   "keywords": [
     "less",
     "styled-components",
+    "emotion",
     "babel",
     "babel-plugin"
   ]
