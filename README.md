@@ -1,7 +1,7 @@
 [![npm](https://img.shields.io/npm/v/babel-plugin-less-for-styled-components.svg)](https://www.npmjs.com/package/babel-plugin-less-for-styled-components)
 
 ## LESS for styled-components
-It's a babel plugin that can use LESS syntax in the [styled-components](https://styled-components.com/)' style template.
+It's a babel plugin that can use LESS syntax in the style template of [styled-components](https://styled-components.com/) or [emotion](https://emotion.sh/docs/introduction).
 
 - Template literal with props
 ```javascript
@@ -32,7 +32,7 @@ const Span = styled.span`
 ```
 
 ### Cautions
-- When registering this plug-in, it must be registered before [`babel-plugin-styled-components`](https://www.npmjs.com/package/babel-plugin-styled-components).
+- ~~When registering this plug-in, it must be registered before `babel-plugin-styled-components`~~ (improved since 1.2.0).
 
 
 function to detect template is from [styless](https://github.com/jean343/styless.git).
